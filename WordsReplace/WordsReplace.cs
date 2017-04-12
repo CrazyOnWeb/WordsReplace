@@ -13,8 +13,8 @@ namespace WordsReplace {
         #region m_
         private int m_formatIndex = 0;
         private List<string> m_Reg_Keywords;
-        private ConcurrentDictionary<string, int> m_map = new ConcurrentDictionary<string, int>();
-        private ConcurrentDictionary<string, List<string>> m_Format_KeywordsValues = new ConcurrentDictionary<string, List<string>>();
+        private ConcurrentDictionary<string, int> m_map;
+        private ConcurrentDictionary<string, List<string>> m_Format_KeywordsValues;
         #endregion
 
         #region c_
@@ -50,7 +50,8 @@ namespace WordsReplace {
         public string Repalce(string content) {
             var result = string.Empty;
             if (string.IsNullOrEmpty(content)) return result;
-
+            m_map = new ConcurrentDictionary<string, int>();
+            m_Format_KeywordsValues = new ConcurrentDictionary<string, List<string>>();
             Dictionary<int, string> splitedContent = new Dictionary<int, string>();
             Dictionary<int, string> splitedContentClone = new Dictionary<int, string>();
             var splited = content.SplitItems(c_Content_MaxLengthPer);
@@ -157,7 +158,7 @@ namespace WordsReplace {
                 result.Add(source.Skip(i * perCount).Take(perCount).ToList());
             }
             if (lastItemLength != 0) {
-                result.Add(source.Skip(source.Count() - lastItemLength).Take(lastItemLength).ToList());
+                result.Add(source.Skip(totalLength - lastItemLength).Take(lastItemLength).ToList());
             }
 
             return result;
