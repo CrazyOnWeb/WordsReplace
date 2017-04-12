@@ -1,0 +1,7 @@
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\obj\Debug\WordsReplaceTest.csprojResolveAssemblyReference.cache
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\bin\Debug\WordsReplaceTest.dll
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\bin\Debug\WordsReplaceTest.pdb
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\bin\Debug\WordsReplace.exe
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\bin\Debug\WordsReplace.pdb
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\obj\Debug\WordsReplaceTest.dll
+D:\guojie\workspace\WordsReplace\WordsReplaceTest\obj\Debug\WordsReplaceTest.pdb
