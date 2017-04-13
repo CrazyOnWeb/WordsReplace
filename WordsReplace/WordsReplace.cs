@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -50,8 +50,7 @@ namespace WordsReplace {
         public string Repalce(string content) {
             var result = string.Empty;
             if (string.IsNullOrEmpty(content)) return result;
-            m_map = new ConcurrentDictionary<string, int>();
-            m_Format_KeywordsValues = new ConcurrentDictionary<string, List<string>>();
+            Reset();
             Dictionary<int, string> splitedContent = new Dictionary<int, string>();
             Dictionary<int, string> splitedContentClone = new Dictionary<int, string>();
             var splited = content.SplitItems(c_Content_MaxLengthPer);
@@ -107,6 +106,12 @@ namespace WordsReplace {
         #endregion
 
         #region private method
+        private void Reset() {
+            m_formatIndex = 0;
+            m_map = new ConcurrentDictionary<string, int>();
+            m_Format_KeywordsValues = new ConcurrentDictionary<string, List<string>>();
+        }
+
         private void KeyWordsRegroup() {
             var sorted = m_KeywordsValues.Keys.OrderByDescending(_ => _.Length).ToList();
             var spilted = sorted.SplitItems(c_Regex_MaxLengthPer);
