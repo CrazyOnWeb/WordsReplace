@@ -24,7 +24,7 @@ namespace WordsReplace {
         #endregion
 
         #region protected m_
-        protected Dictionary<string, List<string>> m_KeywordsValues = new Dictionary<string, List<string>>();
+        protected readonly Dictionary<string, List<string>> m_KeywordsValues = new Dictionary<string, List<string>>();
         #endregion
 
         #region Singleton
