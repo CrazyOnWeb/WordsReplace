@@ -12,9 +12,9 @@ namespace WordsReplace {
     public class WordsReplace {
         #region m_
         private int m_formatIndex = 0;
-        private List<string> m_Reg_Keywords;
-        private ConcurrentDictionary<string, int> m_map;
-        private ConcurrentDictionary<string, List<string>> m_Format_KeywordsValues;
+        private List<string> m_KeywordsReg_Regroup;
+        private ConcurrentDictionary<string, int> m_IncrementNumberByKeyword;
+        private ConcurrentDictionary<string, string> m_KeywordsRelations;
         #endregion
 
         #region c_
@@ -24,6 +24,7 @@ namespace WordsReplace {
         #endregion
 
         #region protected m_
+        // key : keyword / value : values 
         protected readonly Dictionary<string, List<string>> m_KeywordsValues = new Dictionary<string, List<string>>();
         #endregion
 
@@ -59,7 +60,7 @@ namespace WordsReplace {
                 splitedContentClone[i] = splited[i];
             }
             var task = Parallel.ForEach(splitedContent, (kv) => {
-                m_Reg_Keywords.ForEach(reg => {
+                m_KeywordsReg_Regroup.ForEach(reg => {
                     splitedContentClone[kv.Key] = ReplaceByReg(splitedContentClone[kv.Key], reg);
                 });
             });
@@ -67,10 +68,11 @@ namespace WordsReplace {
             while (!task.IsCompleted) {
             }
             var lastContent = string.Join("", splitedContentClone.Values);
-            m_Format_KeywordsValues.ToList().ForEach(formatKV => {
+            m_KeywordsRelations.ToList().ForEach(formatKV => {
                 lastContent = Regex.Replace(lastContent, formatKV.Key, (matched) => {
-                    if (m_Format_KeywordsValues.ContainsKey(matched.Value)) {
-                        return RandomSelect(m_Format_KeywordsValues[matched.Value]);
+                    if (m_KeywordsRelations.ContainsKey(matched.Value)) {
+                        var key = m_KeywordsRelations[matched.Value];
+                        return RandomSelect(m_KeywordsValues[key]);
                     }
                     return matched.Value;
                 });
@@ -108,28 +110,28 @@ namespace WordsReplace {
         #region private method
         private void Reset() {
             m_formatIndex = 0;
-            m_map = new ConcurrentDictionary<string, int>();
-            m_Format_KeywordsValues = new ConcurrentDictionary<string, List<string>>();
+            m_IncrementNumberByKeyword = new ConcurrentDictionary<string, int>();
+            m_KeywordsRelations = new ConcurrentDictionary<string, string>();
         }
 
         private void KeyWordsRegroup() {
             var sorted = m_KeywordsValues.Keys.OrderByDescending(_ => _.Length).ToList();
             var spilted = sorted.SplitItems(c_Regex_MaxLengthPer);
-            m_Reg_Keywords = new List<string>();
-            spilted.ForEach(keyword => m_Reg_Keywords.Add(string.Join("|", keyword).TrimEnd('|')));
+            m_KeywordsReg_Regroup = new List<string>();
+            spilted.ForEach(keyword => m_KeywordsReg_Regroup.Add(string.Join("|", keyword).TrimEnd('|')));
         }
 
         private string ReplaceByReg(string content, string pattern) {
             return Regex.Replace(content, pattern, (matched) => {
                 if (m_KeywordsValues.ContainsKey(matched.Value)) {
-                    if (!m_map.ContainsKey(matched.Value)) {
+                    if (!m_IncrementNumberByKeyword.ContainsKey(matched.Value)) {
                         Interlocked.Increment(ref m_formatIndex);
-                        m_map.GetOrAdd(matched.Value, m_formatIndex);
+                        m_IncrementNumberByKeyword.GetOrAdd(matched.Value, m_formatIndex);
                     }
 
-                    var key = string.Format(c_Format, m_map[matched.Value]);
-                    if (!m_Format_KeywordsValues.ContainsKey(key)) {
-                        m_Format_KeywordsValues.GetOrAdd(key, m_KeywordsValues[matched.Value]);
+                    var key = string.Format(c_Format, m_IncrementNumberByKeyword[matched.Value]);
+                    if (!m_KeywordsRelations.ContainsKey(key)) {
+                        m_KeywordsRelations.GetOrAdd(key, matched.Value);
                     }
                     return key;
                 }
