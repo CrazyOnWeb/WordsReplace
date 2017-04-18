@@ -15,6 +15,7 @@ namespace WordsReplace {
         private List<string> m_KeywordsReg_Regroup;
         private ConcurrentDictionary<string, int> m_IncrementNumberByKeyword;
         private ConcurrentDictionary<string, string> m_KeywordsRelations;
+        private Dictionary<string, List<string>> m_KeywordsValues;
         #endregion
 
         #region c_
@@ -23,15 +24,9 @@ namespace WordsReplace {
         private const string c_Format = @"#「{0}」";
         #endregion
 
-        #region protected m_
-        // key : keyword / value : values 
-        protected readonly Dictionary<string, List<string>> m_KeywordsValues = new Dictionary<string, List<string>>();
-        #endregion
-
         #region Singleton
         private static WordsReplace m_Singleton;
         private WordsReplace() {
-            Reload();
         }
 
         public static WordsReplace Instance() {
@@ -43,12 +38,19 @@ namespace WordsReplace {
         #endregion
 
         #region public method
-        public void Reload() {
-            Load();
+        public void SetKeywordsData(IGetKeywordsData getKeywordsData) {
+            if (m_KeywordsValues != null) {
+                m_KeywordsValues.Clear();
+            }
+
+            m_KeywordsValues = getKeywordsData.SetKeywordsData();
             KeyWordsRegroup();
         }
 
         public string Repalce(string content) {
+            if (m_KeywordsValues == null || m_KeywordsValues.Count <= 0)
+                return content;
+
             var result = string.Empty;
             if (string.IsNullOrEmpty(content)) return result;
             Reset();
@@ -90,23 +92,6 @@ namespace WordsReplace {
             return result;
         }
         #endregion
-
-        #region protected method
-        protected virtual void Load() {
-            StringBuilder sb = new StringBuilder();
-            using (StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"keywords.txt")) {
-                while (sr.Peek() >= 0) {
-                    var item = sr.ReadLine().Split('/');
-                    if (!m_KeywordsValues.ContainsKey(item[0])) {
-                        m_KeywordsValues.Add(item[0], new List<string> { item[1] });
-                    } else {
-                        m_KeywordsValues[item[0]].Add(item[1]);
-                    }
-                }
-            }
-        }
-        #endregion
-
         #region private method
         private void Reset() {
             m_formatIndex = 0;
@@ -115,6 +100,8 @@ namespace WordsReplace {
         }
 
         private void KeyWordsRegroup() {
+            if (m_KeywordsValues == null || m_KeywordsValues.Count <= 0)
+                return;
             var sorted = m_KeywordsValues.Keys.OrderByDescending(_ => _.Length).ToList();
             var spilted = sorted.SplitItems(c_Regex_MaxLengthPer);
             m_KeywordsReg_Regroup = new List<string>();

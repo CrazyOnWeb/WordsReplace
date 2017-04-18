@@ -13,20 +13,19 @@ using System.Windows.Forms;
 
 namespace WordsReplace {
     public partial class Form1 : Form {
+        WordsReplace wordsReplace = WordsReplace.Instance();
         public Form1() {
             InitializeComponent();
+            wordsReplace.SetKeywordsData(new DefaultGetKeywordsData());
         }
         private void button1_Click(object sender, EventArgs e) {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var wordsReplace = WordsReplace.Instance();
             var replaceResult = wordsReplace.Repalce(this.textBox1.Text);
-            //var result = wordsReplace.Repalce(new List<string> { this.textBox1.Text, this.textBox1.Text });
+            ////var result = wordsReplace.Repalce(new List<string> { this.textBox1.Text, this.textBox1.Text });
             this.textBox2.Text = replaceResult;
             sw.Stop();
             this.label1.Text = sw.ElapsedMilliseconds.ToString();
         }
     }
-
-
 }
