@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace WordsReplace {
     public interface IGetKeywordsData {
-        void SetKeywordsData(Dictionary<string, List<string>> container);
+        void GetKeywordsData(Dictionary<string, List<string>> container);
     }
 
-    public class DefaultGetKeywordsData : IGetKeywordsData {
-        public void SetKeywordsData(Dictionary<string, List<string>> container) {
+    public class DefaultKeywordsDataProvider : IGetKeywordsData {
+        public void GetKeywordsData(Dictionary<string, List<string>> container) {
             StringBuilder sb = new StringBuilder();
             using (StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"keywords.txt")) {
                 while (sr.Peek() >= 0) {

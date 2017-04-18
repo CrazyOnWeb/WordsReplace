@@ -38,15 +38,6 @@ namespace WordsReplace {
         #endregion
 
         #region public method
-        public void SetKeywordsData(IGetKeywordsData getKeywordsData) {
-            if (m_KeywordsValues != null) {
-                m_KeywordsValues.Clear();
-            }
-
-            getKeywordsData.SetKeywordsData(m_KeywordsValues);
-            KeyWordsRegroup();
-        }
-
         public string Repalce(string content) {
             if (m_KeywordsValues == null || m_KeywordsValues.Count <= 0)
                 return content;
@@ -135,6 +126,17 @@ namespace WordsReplace {
             return items[rd.Next(0, itemCount)];
         }
         #endregion
+
+        public DefaultKeywordsDataProvider KeywordsProvider {
+            set {
+                if (m_KeywordsValues != null) {
+                    m_KeywordsValues.Clear();
+                }
+
+                value.GetKeywordsData(m_KeywordsValues);
+                KeyWordsRegroup();
+            }
+        }
     }
 
     public static class ItemsSplitExtension {

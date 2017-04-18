@@ -16,7 +16,7 @@ namespace WordsReplace {
         WordsReplace wordsReplace = WordsReplace.Instance();
         public Form1() {
             InitializeComponent();
-            wordsReplace.SetKeywordsData(new DefaultGetKeywordsData());
+            wordsReplace.KeywordsProvider = new DefaultKeywordsDataProvider();
         }
         private void button1_Click(object sender, EventArgs e) {
             Stopwatch sw = new Stopwatch();
