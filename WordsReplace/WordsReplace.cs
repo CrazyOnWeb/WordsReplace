@@ -127,7 +127,7 @@ namespace WordsReplace {
         }
         #endregion
 
-        public DefaultKeywordsDataProvider KeywordsProvider {
+        public IGetKeywordsData KeywordsProvider {
             set {
                 if (m_KeywordsValues != null) {
                     m_KeywordsValues.Clear();
