@@ -7,24 +7,22 @@ using System.Threading.Tasks;
 
 namespace WordsReplace {
     public interface IGetKeywordsData {
-        Dictionary<string, List<string>> SetKeywordsData();
+        void SetKeywordsData(Dictionary<string, List<string>> container);
     }
 
     public class DefaultGetKeywordsData : IGetKeywordsData {
-        public Dictionary<string, List<string>> SetKeywordsData() {
+        public void SetKeywordsData(Dictionary<string, List<string>> container) {
             StringBuilder sb = new StringBuilder();
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
             using (StreamReader sr = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"keywords.txt")) {
                 while (sr.Peek() >= 0) {
                     var item = sr.ReadLine().Split('/');
-                    if (!result.ContainsKey(item[0])) {
-                        result.Add(item[0], new List<string> { item[1] });
+                    if (!container.ContainsKey(item[0])) {
+                        container.Add(item[0], new List<string> { item[1] });
                     } else {
-                        result[item[0]].Add(item[1]);
+                        container[item[0]].Add(item[1]);
                     }
                 }
             }
-            return result;
         }
     }
 }

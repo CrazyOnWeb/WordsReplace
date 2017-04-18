@@ -15,7 +15,7 @@ namespace WordsReplace {
         private List<string> m_KeywordsReg_Regroup;
         private ConcurrentDictionary<string, int> m_IncrementNumberByKeyword;
         private ConcurrentDictionary<string, string> m_KeywordsRelations;
-        private Dictionary<string, List<string>> m_KeywordsValues;
+        private readonly Dictionary<string, List<string>> m_KeywordsValues = new Dictionary<string, List<string>>();
         #endregion
 
         #region c_
@@ -43,7 +43,7 @@ namespace WordsReplace {
                 m_KeywordsValues.Clear();
             }
 
-            m_KeywordsValues = getKeywordsData.SetKeywordsData();
+            getKeywordsData.SetKeywordsData(m_KeywordsValues);
             KeyWordsRegroup();
         }
 
