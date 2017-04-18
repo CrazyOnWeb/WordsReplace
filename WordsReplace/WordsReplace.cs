@@ -98,8 +98,13 @@ namespace WordsReplace {
             m_KeywordsReg_Regroup = new List<string>();
             spilted.ForEach(keyword => m_KeywordsReg_Regroup.Add(string.Join("|", keyword).TrimEnd('|')));
         }
+        private string FilterRegKey(string key)
+        {
+            return key.Replace("*", @"\*");
+        }
 
         private string ReplaceByReg(string content, string pattern) {
+            pattern = FilterRegKey(pattern);
             return Regex.Replace(content, pattern, (matched) => {
                 if (m_KeywordsValues.ContainsKey(matched.Value)) {
                     if (!m_IncrementNumberByKeyword.ContainsKey(matched.Value)) {
